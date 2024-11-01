@@ -38,6 +38,7 @@ python main.py
 
 ### Контакты
 
-**Авторы проекта:** [Матвей Колтунов](https://github.com/echanatwell), [Казымов Орхан Азад оглы](), [Кожевников Александр Юрьевич]()
+**Авторы проекта:** [Матвей Колтунов](https://github.com/echanatwell), [Казымов Орхан Азад оглы](https://github.com/RaySkarken), [Кожевников Александр Юрьевич]()
 
-**Email:** koltunov.matwei@gmail.com
+**Email:** koltunov.matwei@gmail.com, rayskarken@gmail.com
+
