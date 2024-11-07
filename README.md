@@ -40,5 +40,5 @@ python main.py
 
 **Авторы проекта:** [Матвей Колтунов](https://github.com/echanatwell), [Орхан Казымов](https://github.com/RaySkarken), [Кожевников Александр Юрьевич]()
 
-**Email:** koltunov.matwei@gmail.com, rayskarken@gmail.com
+**Email:** koltunov.matwei@gmail.com, rayskarken@gmail.com, kozhevnikov.alexandr8@yandex.ru
 
