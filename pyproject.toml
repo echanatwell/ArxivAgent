@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "arxivagent"
+version = "0.1.0"
+description = "ArxivAgent is an intelligent assistant powered by an LLM that can help researchers explore any field based on articles from arxiv.org. The assistant studies the selected domain using provided keywords and compiles processed knowledge into a concise digest, highlighting key research directions in the field."
+authors = ["Orkhan Kazymov <rayskarken@gmail.com>", "Matvey Koltunov <koltunov.matwei@gmail.com>", "Alexander Kozhevnikov <kozhevnikov.alexandr8@yandex.ru>"]
+license = ""
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.6"
+uvicorn = "^0.32.1"
+arxiv = "^2.1.3"
+langchain = "^0.3.10"
+openai = "^1.57.0"
+langgraph = "^0.2.56"
+langchain-core = "^0.3.22"
+langchain-ollama = "^0.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
