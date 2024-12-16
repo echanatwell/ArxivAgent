@@ -5,6 +5,7 @@ description = "ArxivAgent is an intelligent assistant powered by an LLM that can
 authors = ["Orkhan Kazymov <rayskarken@gmail.com>", "Matvey Koltunov <koltunov.matwei@gmail.com>", "Alexander Kozhevnikov <kozhevnikov.alexandr8@yandex.ru>"]
 license = ""
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -16,6 +17,7 @@ openai = "^1.57.0"
 langgraph = "^0.2.56"
 langchain-core = "^0.3.22"
 langchain-ollama = "^0.2.1"
+sentence-transformers = "^3.3.1"
 
 
 [build-system]
