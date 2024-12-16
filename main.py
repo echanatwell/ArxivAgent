@@ -80,7 +80,7 @@ def call_model(
     system_prompt = SystemMessage(
         """You are a helpful AI assistant that takes a user input and summarize arxiv articles found by strictly keywords from input. 
         You can use tool you have for searching articles and summarizing them.
-        You need to search relevant articles by given keywords and summarize approaches from all found articles and make general overview of the approaches
+        You need to, first, search relevant articles by given keywords to get summarization of each article and then make general overview of the approaches
         When you are certain you've got enough article summaries comprise them into related work with references.
         Respond with plain text, do not include enumerates and any other paragraphs""" # , do not include enumerates and any other paragraphs beside Related Work.
         )
