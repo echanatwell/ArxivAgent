@@ -22,9 +22,9 @@ class AgentState(TypedDict):
 @tool("ArticleSummarizingTool")
 def arxiv_search_tool(query: str, max_results: int = 2):
     """Search articles on Arxiv by keywords and returns summaries of each article.
-    It takes keywords as query, max count of requested articles and model from AgentState"""
+    It takes keywords as query, max count of requested articles""" # and model from AgentState
     retriever = ArxivRetriever(
-        load_max_docs=min(1, max_results), 
+        load_max_docs=min(5, max_results), 
         get_full_documents=True, 
         doc_content_chars_max=None,
     )
@@ -32,8 +32,8 @@ def arxiv_search_tool(query: str, max_results: int = 2):
     docs = retriever.invoke(query)
 
     sys_prompt = SystemMessage(
-        """You are a helpful summarization AI assistant that takes text of Arxiv article and summarize it into general overview including the most important points.
-        The max summarization length is 1000 characters. 
+        """You are a helpful summarization AI assistant that takes text of Arxiv article and summarizes it into general overview including the most important points.
+        The max summarization length is 1500 characters. Minimum summarization length is 400 characters. 
         Do not return anything except summary."""
     )
     summary = "Summaries:"
@@ -46,11 +46,18 @@ def arxiv_search_tool(query: str, max_results: int = 2):
     
     return summary
 
-@tool("SummarizingTool") 
+# @tool("SummarizingTool") 
+# def summarize_tool(text: str):
+#     """Summarizes text using a language model"""
+#     prompt = f"Summarize the following article: {text}"
+#     summary = model(prompt)
+#     return summary
+
+@tool("SummarizingTool")
 def summarize_tool(text: str):
-    """Summarizes text using a language model"""
-    prompt = f"Summarize the following article: {text}"
-    summary = model(prompt)
+    """Summarizes article's content into a general overview of the approaches"""
+    prompt = f"Summarize the following content into a general overview of the approaches: {text}"
+    summary = model.invoke(prompt).content
     return summary
 
 def tool_node(state: AgentState):
@@ -73,9 +80,9 @@ def call_model(
     system_prompt = SystemMessage(
         """You are a helpful AI assistant that takes a user input and summarize arxiv articles found by strictly keywords from input. 
         You can use tool you have for searching articles and summarizing them.
-        You need to summarize approaches from all found articles and make general overview of the approaches
+        You need to search relevant articles by given keywords and summarize approaches from all found articles and make general overview of the approaches
         When you are certain you've got enough article summaries comprise them into related work with references.
-        Respond with plain text, do not include enumerates and any other paragraphs beside Related Work."""
+        Respond with plain text, do not include enumerates and any other paragraphs""" # , do not include enumerates and any other paragraphs beside Related Work.
         )
     response = model_with_tools.invoke([system_prompt] + state["messages"], config)
     return {"messages": response}
@@ -101,7 +108,7 @@ def print_stream(stream):
 
 if __name__ == '__main__':
 
-    model = ChatOllama(model="llama3.2:3b", num_ctx=32768)
+    model = ChatOllama(model="llama3.2:3b-instruct-fp16", num_ctx=32768)
 
     tools = [arxiv_search_tool, summarize_tool]
     model_with_tools = model.bind_tools(tools)
