@@ -1,14 +1,12 @@
 from typing import Annotated, Sequence, TypedDict
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
-from langchain_community.retrievers.arxiv import ArxivRetriever
 
 import json
-from langchain_core.messages import ToolMessage, SystemMessage, HumanMessage
+from langchain_core.messages import ToolMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
 
 from langchain_core.language_models import BaseChatModel
-from langchain.tools import BaseTool
 from langchain_core.tools import tool
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, END
@@ -21,34 +19,6 @@ class AgentState(TypedDict):
     """The state of the agent"""
     messages: Annotated[Sequence[BaseMessage], add_messages]
     model: BaseChatModel
-    # tools: Sequence[BaseTool]
-
-# @tool("ArticleSummarizingTool")
-# def arxiv_search_tool(query: str, max_results: int = 2):
-#     """Search articles on Arxiv by keywords and returns summaries of each article.
-#     It takes keywords as query, max count of requested articles""" # and model from AgentState
-#     retriever = ArxivRetriever(
-#         load_max_docs=min(2, max_results), 
-#         get_full_documents=True, 
-#         doc_content_chars_max=None,
-#     )
-
-#     docs = retriever.invoke(query)
-
-#     sys_prompt = SystemMessage(
-#         """You are a helpful summarization AI assistant that takes text of Arxiv article and summarizes it into general overview including the most important points.
-#         The max summarization length is 1000 words. Minimum summarization length is 100 words. 
-#         Do not return anything except summary."""
-#     )
-#     summary = "Summaries:"
-
-#     # print("query: ", query, "num docs:", len(docs))
-#     for i, doc in enumerate(docs):
-#         inp = [sys_prompt] + [ToolMessage(doc.page_content, tool_call_id=uuid.uuid4())]
-#         sum_i = f"{doc.metadata['Title']} \n {model.invoke(inp).content}"
-#         summary += "\n\n" + sum_i
-    
-#     return summary
 
 @tool("ArticleSummarizingTool")
 def arxiv_search_tool(query: int):
@@ -140,7 +110,7 @@ def print_stream(stream):
 if __name__ == "__main__":
     model = ChatOllama(model="qwen2.5:7b-instruct", num_ctx=32768)
 
-    tools = [arxiv_search_tool] # , summarize_tool
+    tools = [arxiv_search_tool]
     model_with_tools = model.bind_tools(tools)
 
     tools_by_name = {tool.name: tool for tool in tools}
