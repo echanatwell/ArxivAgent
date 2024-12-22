@@ -13,7 +13,6 @@ from langchain_core.tools import tool
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, END
 
-from score import TextsSimilarity
 import os
 import fitz
 import uuid
@@ -139,7 +138,7 @@ def print_stream(stream):
 
 
 if __name__ == "__main__":
-    model = ChatOllama(model="llama3.2:3b-instruct-fp16", num_ctx=32768)
+    model = ChatOllama(model="qwen2.5:7b-instruct", num_ctx=32768)
 
     tools = [arxiv_search_tool] # , summarize_tool
     model_with_tools = model.bind_tools(tools)
@@ -165,9 +164,6 @@ if __name__ == "__main__":
     workflow.add_edge("tools", "agent")
 
     graph = workflow.compile()
-
-    # metric = TextsSimilarity()
-    # scores = []
 
     folders = os.listdir('data')
     n = 13
