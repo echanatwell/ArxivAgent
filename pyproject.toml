@@ -18,6 +18,7 @@ langgraph = "^0.2.56"
 langchain-core = "^0.3.22"
 langchain-ollama = "^0.2.1"
 sentence-transformers = "^3.3.1"
+pymupdf = "^1.25.1"
 
 
 [build-system]
