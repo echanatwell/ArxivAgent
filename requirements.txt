@@ -108,3 +108,4 @@ urllib3==2.2.3
 watchdog==6.0.0
 wcwidth==0.2.13
 yarl==1.18.0
+sentence-transformers>=3.3.1
