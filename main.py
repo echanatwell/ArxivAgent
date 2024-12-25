@@ -54,7 +54,7 @@ if __name__ == '__main__':
     with st.form("my_form"):
         text = st.text_area(
             "Enter keywords:",
-            "aboba",
+            "Attention",
         )
         submitted = st.form_submit_button("Submit")
         if submitted:

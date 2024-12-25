@@ -15,6 +15,8 @@ import os
 import fitz
 import uuid
 
+from modules.score import TextsSimilarity
+
 class AgentState(TypedDict):
     """The state of the agent"""
     messages: Annotated[Sequence[BaseMessage], add_messages]
@@ -28,7 +30,7 @@ def arxiv_search_tool(query: int):
     sys_prompt = SystemMessage(
         """You are a helpful summarization AI assistant that takes text of Arxiv article and summarizes it into general overview including the most important points.
         Maximum length of summarization is 2000 words. Minimum summarization length is 1000 words. 
-        """ # Do not return anything except summary.
+        """
     )
     summary = "Summaries:"
 
@@ -80,8 +82,6 @@ def call_model(
         DO NOT change or reformat user input when pass it into tools.
         IMPORTANT: user input must be represented as integer query identifier for articles searching.""" 
         )
-    # Use tools sequentially and Use the ONLY ONE tool per call, dont try to use a several at a time. 
-    #     If want to use more than one tool choose only one and call other next time.
     response = model_with_tools.invoke([system_prompt] + state["messages"], config)
     return {"messages": response}
 
@@ -136,30 +136,31 @@ if __name__ == "__main__":
     graph = workflow.compile()
 
     folders = os.listdir('data')
-    n = 19
-    folder_name = folders[n]
+    # n = 19
+    # folder_name = folders[n]
 
-    inputs = {"messages": [("user", str(n))]} 
+    # inputs = {"messages": [("user", str(n))]} 
         
-    ans = print_stream(graph.stream(inputs, stream_mode="values"))
-    ans_text = ans.content
+    # ans = print_stream(graph.stream(inputs, stream_mode="values"))
+    # ans_text = ans.content
 
-    with open(os.path.join("data", folder_name, "ans.txt"), "w") as f:
-        f.write(ans_text)
+    # with open(os.path.join("data", folder_name, "ans.txt"), "w") as f:
+    #     f.write(ans_text)
 
-    
-    # for inp in range(len(folders)):
-    #     inputs = {"messages": [("user", str(inp))]} 
+    scores = []
+    metric = TextsSimilarity()
+    for inp in range(len(folders)):
+        inputs = {"messages": [("user", str(inp))]} 
         
-    #     ans = print_stream(graph.stream(inputs, stream_mode="values"))
-    #     ans_text = ans.content
-    #     with open(os.path.join("data", folders[inp], "rw.txt"), "r") as f:
-    #         ref = ""
-    #         for line in f.readlines():
-    #             ref += line
-    #     sc = metric(ans_text, ref)
+        ans = print_stream(graph.stream(inputs, stream_mode="values"))
+        ans_text = ans.content
+        with open(os.path.join("data", folders[inp], "rw.txt"), "r") as f:
+            ref = ""
+            for line in f.readlines():
+                ref += line
+        sc = metric(ans_text, ref)
 
-    #     scores.append((folders[inp], sc))
+        scores.append((folders[inp], sc))
 
     # print("+_+_+_+_+_+_+_+_+_+_+_+")
     # print(ans.content)
