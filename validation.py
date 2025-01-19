@@ -136,16 +136,6 @@ if __name__ == "__main__":
     graph = workflow.compile()
 
     folders = os.listdir('data')
-    # n = 19
-    # folder_name = folders[n]
-
-    # inputs = {"messages": [("user", str(n))]} 
-        
-    # ans = print_stream(graph.stream(inputs, stream_mode="values"))
-    # ans_text = ans.content
-
-    # with open(os.path.join("data", folder_name, "ans.txt"), "w") as f:
-    #     f.write(ans_text)
 
     scores = []
     metric = TextsSimilarity()
@@ -161,8 +151,5 @@ if __name__ == "__main__":
         sc = metric(ans_text, ref)
 
         scores.append((folders[inp], sc))
-
-    # print("+_+_+_+_+_+_+_+_+_+_+_+")
-    # print(ans.content)
     
     

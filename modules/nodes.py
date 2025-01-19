@@ -32,7 +32,7 @@ def tool_node(state: AgentState):
                     sum_i = state['model'].invoke(inp).content
                     summary += "\n\n" + sum_i
             tool_result = summary
-        print("EBANAYA DLINA", len(json.dumps(tool_result)))
+
         outputs.append(
             ToolMessage(
                 content=json.dumps(tool_result),
