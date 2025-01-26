@@ -6,6 +6,7 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.messages import ToolMessage, SystemMessage, HumanMessage
 from langchain.tools import BaseTool
 import json
+import uuid
 
 
 class AgentState(TypedDict):
@@ -18,7 +19,7 @@ class AgentState(TypedDict):
 def tool_node(state: AgentState):
     sys_prompt = SystemMessage(
         """You are a helpful summarization AI assistant that takes text of Arxiv article and summarizes it into general overview including the most important points.
-        The max summarization length is 1500 characters. Minimum summarization length is 400 characters. 
+        The max artcile summarization length is 1500 characters. Minimum article summarization length is 400 characters. 
         Do not return anything except summary."""
     )
     summary = "Summaries:"
@@ -29,7 +30,7 @@ def tool_node(state: AgentState):
         if tool_call["name"] == "ArticleSummarizingTool":
             for i, article_text in enumerate(tool_result.split("[ARTICLE_BREAK]")):
                 if len(article_text.strip()) > 0:
-                    inp = [sys_prompt] + [HumanMessage(article_text)]
+                    inp = [sys_prompt] + [ToolMessage(content=article_text, name="ArticleSummarizingTool", tool_call_id=uuid.uuid4())]
                     sum_i = state['model'].invoke(inp).content
                     summary += "\n\n" + sum_i
             tool_result = summary
@@ -49,12 +50,13 @@ def call_model(
         config: RunnableConfig,
 ):
     system_prompt = SystemMessage(
-        """You are a helpful AI assistant that takes a user input and summarizes arxiv articles found by strictly keywords from input. 
-        You can use tools for rewriting the user query to improve search results, searching articles, and summarizing them.
-        Start by rewriting the query if necessary, then search relevant articles, summarize them, and compile a general overview.
-        When you are certain you've got enough article summaries comprise them into related work with references.
-        Respond with plain text, do not include enumerates and any other paragraphs"""
-    )
+        """You are a helpful AI assistant that takes a user input and summarize arxiv articles. 
+        You can use tool you have for searching articles and summarizing them.
+        You can rewrite user input to make extra calls of ArxivSearchingTool for getting more relevant articles. 
+        You need to search relevant articles to get summarization of each article and then make general overview of the approaches
+        When you are certain you've got enough article summaries comprise them to explain the essence of approaches you found.
+        You dont have limits on overall summary length."""
+        )
     response = state["model"].invoke([system_prompt] + state["messages"], config)
     return {"messages": response}
 

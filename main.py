@@ -17,7 +17,8 @@ def print_stream(stream):
                 print(message)
             else:
                 m = message
-                message.pretty_print()
+                if len(message.content) < 1000:
+                    message.pretty_print()
     return m
 
 
