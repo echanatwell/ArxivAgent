@@ -5,7 +5,8 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.runnables import RunnableConfig
 from langchain_core.messages import ToolMessage, SystemMessage, HumanMessage
 from langchain.tools import BaseTool
-import json 
+import json
+
 
 class AgentState(TypedDict):
     """The state of the agent"""
@@ -42,19 +43,21 @@ def tool_node(state: AgentState):
         )
     return {"messages": outputs}
 
+
 def call_model(
         state: AgentState,
         config: RunnableConfig,
 ):
     system_prompt = SystemMessage(
-        """You are a helpful AI assistant that takes a user input and summarize arxiv articles found by strictly keywords from input. 
-        You can use tool you have for searching articles and summarizing them.
-        You need to, first, search relevant articles by given keywords to get summarization of each article and then make general overview of the approaches
+        """You are a helpful AI assistant that takes a user input and summarizes arxiv articles found by strictly keywords from input. 
+        You can use tools for rewriting the user query to improve search results, searching articles, and summarizing them.
+        Start by rewriting the query if necessary, then search relevant articles, summarize them, and compile a general overview.
         When you are certain you've got enough article summaries comprise them into related work with references.
         Respond with plain text, do not include enumerates and any other paragraphs"""
-        )
+    )
     response = state["model"].invoke([system_prompt] + state["messages"], config)
     return {"messages": response}
+
 
 def should_continue(state: AgentState):
     messages = state["messages"]
