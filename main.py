@@ -6,6 +6,7 @@ from modules.nodes import AgentState, call_model, tool_node, should_continue
 
 import streamlit as st
 
+
 def print_stream(stream):
     idx = 0
     m = None
@@ -16,7 +17,8 @@ def print_stream(stream):
                 print(message)
             else:
                 m = message
-                message.pretty_print()
+                if len(message.content) < 1000:
+                    message.pretty_print()
     return m
 
 

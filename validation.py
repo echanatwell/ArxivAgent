@@ -17,10 +17,12 @@ import uuid
 
 from modules.score import TextsSimilarity
 
+
 class AgentState(TypedDict):
     """The state of the agent"""
     messages: Annotated[Sequence[BaseMessage], add_messages]
     model: BaseChatModel
+
 
 @tool("ArticleSummarizingTool")
 def arxiv_search_tool(query: int):
@@ -49,12 +51,14 @@ def arxiv_search_tool(query: int):
     
     return summary
 
+
 @tool("GeneralSummarizingTool")
 def summarize_tool(text: str):
     """Summarizes content from few articles and makes a general overview of the approaches from given summaries of set od articles."""
     prompt = f"Summarize the following content into a general overview of the approaches: {text}"
     summary = model.invoke(prompt).content
     return summary
+
 
 def tool_node(state: AgentState):
     outputs = []
@@ -68,6 +72,7 @@ def tool_node(state: AgentState):
             )
         )
     return {"messages": outputs}
+
 
 def call_model(
         state: AgentState,
@@ -85,6 +90,7 @@ def call_model(
     response = model_with_tools.invoke([system_prompt] + state["messages"], config)
     return {"messages": response}
 
+
 def should_continue(state: AgentState):
     messages = state["messages"]
     last_message = messages[-1]
@@ -92,6 +98,7 @@ def should_continue(state: AgentState):
         return "end"
     else:
         return "continue"
+
 
 def print_stream(stream):
     idx = 0
