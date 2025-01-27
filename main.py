@@ -1,7 +1,7 @@
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, END
 
-from modules.tools import arxiv_search_tool
+from modules.tools import arxiv_search_tool, query_rewriting_tool
 from modules.nodes import AgentState, call_model, tool_node, should_continue
 
 import streamlit as st
@@ -23,10 +23,12 @@ def print_stream(stream):
 
 
 if __name__ == '__main__':
+    model = ChatOllama(model="qwen2.5:7b-instruct", num_ctx=16384)  # 32768
 
-    model = ChatOllama(model="qwen2.5:7b-instruct", num_ctx=16384) # 32768
-
-    tools = [arxiv_search_tool]
+    tools = [
+        query_rewriting_tool,
+        arxiv_search_tool
+    ]
     model_with_tools = model.bind_tools(tools)
 
     tools_by_name = {tool.name: tool for tool in tools}
